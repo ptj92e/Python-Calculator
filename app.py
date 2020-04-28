@@ -9,6 +9,9 @@ from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QVBoxLayout
+from functools import partial
+
+ERROR_MSG = "ERROR"
 
 __version__ = "0.1"
 __author__ = "Phillip Jones"
@@ -85,6 +88,26 @@ class PyCalcUi(QMainWindow):
     def clearDisplay(self):
         self.setDisplayText("")
 
+class PyCalcCtrl:
+    def __init__(self, view):
+        self._view = view
+        # Connect Signals and Slots
+        self._connectSignals()
+
+    def _buildExpression(self, sub_exp):
+        # Build the expression
+        expression = self._view.displayText() + sub_exp
+        # Calling the setDisplayText method to change the display text
+        self._view.setDisplayText(expression)
+
+    def _connectSignals(self):
+        # Connect signals and slots
+        for btnText, btn in self._view.buttons.items():
+            if btnText not in {"=", "C"}:
+                btn.clicked.connect(partial(self._buildExpression, btnText))
+
+        self._view.buttons["C"].clicked.connect(self._view.clearDisplay)
+
 # Client code
 def main():
     # Create an instance of QApplication
@@ -92,6 +115,8 @@ def main():
     #Show the calculator's GUI
     view=PyCalcUi()
     view.show()
+    # Create instances of the model and the controller 
+    PyCalcCtrl(view=view)
     # Execute Calculator's main loop
     sys.exit(pycalc.exec_())
 
