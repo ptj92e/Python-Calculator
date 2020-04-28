@@ -74,6 +74,16 @@ class PyCalcUi(QMainWindow):
             buttonsLayout.addWidget(self.buttons[btnText], pos[0], pos[1])
             # Add buttons layout to general layout
             self.generalLayout.addLayout(buttonsLayout)
+    # Sets and Updates the display's text
+    def setDisplayText(self, text):
+        self.display.setText(text)
+        self.display.setFocus()
+    # Getter method the returns the display's current text
+    def displayText(self):
+        return self.display.text()
+    # Resets the display text back to an empty string
+    def clearDisplay(self):
+        self.setDisplayText("")
 
 # Client code
 def main():
